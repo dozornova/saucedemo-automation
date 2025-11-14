@@ -5,8 +5,11 @@
 Используется **Page Object Model**, **Allure**, **TestNG**
 
 ## Тесты
-- Успешный логин (`standard_user`)
-- Проверка заголовка "Products"
+1. Успешный логин
+2. Неверный пароль
+3. Добавление в корзину
+4. Удаление из корзины
+5. Сортировка по цене
 
 ## Стек
 - Java 17
@@ -19,3 +22,4 @@
 ## Запуск
 ```bash
 mvn clean test
+allure serve target/allure-results
