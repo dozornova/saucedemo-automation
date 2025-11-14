@@ -1,4 +1,4 @@
-package com.qa;
+package tests;
 
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
@@ -7,18 +7,15 @@ import org.testng.annotations.Test;
 import pages.LoginPage;
 import pages.InventoryPage;
 import pages.CartPage;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.time.Duration;
 
 import java.util.List;
 
 import static org.testng.Assert.*;
 
 public class LoginTest extends BaseTest {
-
-    // Вспомогательный метод — логин
-    private void login(String username, String password) {
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(username, password);
-    }
 
     @Test
     @Step("1. Успешный логин")
@@ -79,6 +76,60 @@ public class LoginTest extends BaseTest {
                 .toList();
 
         assertTrue(isSorted(values), "Товары не отсортированы по возрастанию цены");
+    }
+
+    @Test
+    @Step("6. Оформление заказа — шаг 1")
+    public void testCheckoutStep1() {
+        login("standard_user", "secret_sauce");
+        new InventoryPage(driver).addToCartByName("Sauce Labs Backpack");
+        new InventoryPage(driver).goToCart();
+
+        CartPage cartPage = new CartPage(driver);
+        cartPage.clickCheckout(); // ДОЛЖЕН БЫТЬ!
+
+        driver.findElement(By.id("first-name")).sendKeys("Sergey");
+        driver.findElement(By.id("last-name")).sendKeys("Test");
+        driver.findElement(By.id("postal-code")).sendKeys("12345");
+        driver.findElement(By.id("continue")).click();
+
+        assertTrue(driver.getCurrentUrl().contains("checkout-step-two.html"));
+    }
+
+    @Test
+    @Step("7. Burger menu → Logout")
+    public void testLogout() {
+        login("standard_user", "secret_sauce");
+
+        driver.findElement(By.id("react-burger-menu-btn")).click();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("logout_sidebar_link"))).click();
+
+        // ЖДЁМ ПЕРЕХОДА НА ГЛАВНУЮ
+        wait.until(ExpectedConditions.urlToBe("https://www.saucedemo.com/"));
+
+        assertTrue(driver.getCurrentUrl().equals("https://www.saucedemo.com/"));
+    }
+
+    @Test
+    @Step("8-9. Footer + About — проверка ссылок (без переходов)")
+    public void testFooterAndAboutLinks() {
+        login("standard_user", "secret_sauce");
+
+        // Footer — Twitter
+        assertEquals(driver.findElement(By.cssSelector(".social_twitter a")).getAttribute("href"), "https://twitter.com/saucelabs");
+
+        // Footer — Facebook
+        assertEquals(driver.findElement(By.cssSelector(".social_facebook a")).getAttribute("href"), "https://www.facebook.com/saucelabs");
+
+        // Footer — LinkedIn
+        assertEquals(driver.findElement(By.cssSelector(".social_linkedin a")).getAttribute("href"), "https://www.linkedin.com/company/sauce-labs/");
+
+        // About — в бургер-меню (открываем меню)
+        driver.findElement(By.id("react-burger-menu-btn")).click();
+        String aboutHref = driver.findElement(By.id("about_sidebar_link")).getAttribute("href");
+        assertEquals(aboutHref, "https://saucelabs.com/");
     }
 
     private boolean isSorted(List<Double> list) {

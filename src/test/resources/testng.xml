@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Saucedemo Tests">
+    <parameter name="browser" value="firefox"/>
+
+    <test name="Firefox Test">
+        <classes>
+            <class name="tests.LoginTest"/>
+            <class name="tests.FirefoxSpecificTest"/>
+        </classes>
+    </test>
+</suite>

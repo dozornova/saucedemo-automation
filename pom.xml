@@ -23,7 +23,7 @@
             <version>4.25.0</version>
         </dependency>
 
-        <!-- WebDriverManager (авто-драйвер) -->
+        <!-- WebDriverManager (авто-драйвер для Chrome и Firefox) -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
@@ -42,6 +42,14 @@
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
             <version>2.27.0</version>
+        </dependency>
+
+        <!-- Apache Commons IO — для копирования скриншотов -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.16.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

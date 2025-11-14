@@ -15,7 +15,7 @@ public class CartPage {
     }
 
     public void clickCheckout() {
-        driver.findElement(checkoutButton).click();
+        driver.findElement(By.id("checkout")).click();
     }
 
     public void clickContinueShopping() {
